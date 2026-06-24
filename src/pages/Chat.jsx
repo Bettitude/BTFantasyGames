@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, MessageSquare, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../lib/supabase';
 import { api } from '../lib/api';
 
 function formatTime(iso) {
@@ -33,34 +32,30 @@ export default function Chat() {
   const [sending, setSending] = useState(false);
   const bottomRef = useRef(null);
 
-  // Load history
+  // Load history, then poll for new messages since there's no server push channel
   useEffect(() => {
     setLoading(true);
     setMessages([]);
-    api.get(`/chat?room=${room}&limit=50`)
-      .then(data => setMessages(data ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [room]);
 
-  // Supabase Realtime subscription for new messages
-  useEffect(() => {
-    const channel = supabase
-      .channel(`chat:${room}`)
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `room=eq.${room}` },
-        payload => {
+    function fetchMessages() {
+      return api.get(`/chat?room=${room}&limit=50`)
+        .then(data => {
           setMessages(prev => {
-            // Avoid duplicates if our own optimistic update already added it
-            if (prev.find(m => m.id === payload.new.id)) return prev;
-            return [...prev, payload.new];
+            const fetched = data ?? [];
+            // Keep any not-yet-confirmed optimistic messages not present in the fetched batch
+            const pendingOptimistic = prev.filter(m =>
+              m.id.startsWith('opt-') &&
+              !fetched.some(f => f.user_id === m.user_id && f.content === m.content)
+            );
+            return [...fetched, ...pendingOptimistic];
           });
-        }
-      )
-      .subscribe();
+        })
+        .catch(() => {});
+    }
 
-    return () => { supabase.removeChannel(channel); };
+    fetchMessages().finally(() => setLoading(false));
+    const id = setInterval(fetchMessages, 3000);
+    return () => clearInterval(id);
   }, [room]);
 
   // Scroll to bottom on new message

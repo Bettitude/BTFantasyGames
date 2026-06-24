@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import { useTeam } from '../context/TeamContext';
 import { formatBudget } from '../utils/pointsCalculator';
 import { api } from '../lib/api';
-import { supabase } from '../lib/supabase';
 
 const WC_START = new Date('2026-06-14T16:00:00Z');
 
@@ -30,26 +29,20 @@ function useNotifications(user) {
 
   useEffect(() => {
     if (!user) return;
-    api.get('/notifications')
-      .then(data => {
-        setNotifs(data ?? []);
-        setUnread((data ?? []).filter(n => !n.is_read).length);
-      })
-      .catch(() => {});
 
-    // Realtime: new notification pushed to this user
-    const channel = supabase
-      .channel('user-notifications')
-      .on('postgres_changes', {
-        event: 'INSERT', schema: 'public', table: 'notifications',
-        filter: `user_id=eq.${user.id}`,
-      }, payload => {
-        setNotifs(prev => [payload.new, ...prev]);
-        setUnread(u => u + 1);
-      })
-      .subscribe();
+    function fetchNotifs() {
+      api.get('/notifications')
+        .then(data => {
+          setNotifs(data ?? []);
+          setUnread((data ?? []).filter(n => !n.is_read).length);
+        })
+        .catch(() => {});
+    }
 
-    return () => { supabase.removeChannel(channel); };
+    fetchNotifs();
+    // Poll for new notifications since there's no server push channel
+    const id = setInterval(fetchNotifs, 15000);
+    return () => clearInterval(id);
   }, [user]);
 
   function markRead() {
