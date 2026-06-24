@@ -4,7 +4,7 @@ import { Shield, Zap } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
-  const { signIn, signInDemo } = useAuth();
+  const { signIn } = useAuth();
   const navigate   = useNavigate();
   const location   = useLocation();
   const from = location.state?.from?.pathname || '/';
@@ -12,6 +12,7 @@ export default function Login() {
   const [form, setForm]             = useState({ email: '', password: '' });
   const [error, setError]           = useState('');
   const [loading, setLoading]       = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -25,9 +26,15 @@ export default function Login() {
     } finally { setLoading(false); }
   }
 
-  function handleDemo() {
-    signInDemo();
-    navigate('/', { replace: true });
+  async function handleDemo() {
+    setError('');
+    setDemoLoading(true);
+    try {
+      await signIn('demo@btff.com', 'demo1234');
+      navigate('/', { replace: true });
+    } catch (err) {
+      setError(err.message);
+    } finally { setDemoLoading(false); }
   }
 
   return (
@@ -99,15 +106,18 @@ export default function Login() {
           </div>
 
           {/* Demo button — top, prominent */}
-          <button onClick={handleDemo} disabled={loading}
+          <button onClick={handleDemo} disabled={demoLoading || loading}
             className="w-full mb-6 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-all"
             style={{
               background: 'linear-gradient(135deg, #FFC527 0%, #e6a800 100%)',
               color: '#000',
               boxShadow: '0 4px 20px rgba(255,197,39,0.3)',
             }}>
-            <Zap className="w-4 h-4" fill="currentColor"/>
-            Try Demo — instant access
+            {demoLoading
+              ? <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"/>
+              : <Zap className="w-4 h-4" fill="currentColor"/>
+            }
+            {demoLoading ? 'Entering…' : 'Try Demo — instant access'}
           </button>
 
           <div className="relative mb-6">
@@ -143,7 +153,7 @@ export default function Login() {
               <input className="input" type="password" placeholder="••••••••"
                 value={form.password} onChange={e => setForm(f => ({...f, password: e.target.value}))} required autoComplete="current-password"/>
             </div>
-            <button type="submit" disabled={loading} className="btn-blue mt-1 flex items-center justify-center gap-2 py-3">
+            <button type="submit" disabled={loading || demoLoading} className="btn-blue mt-1 flex items-center justify-center gap-2 py-3">
               {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/> : null}
               {loading ? 'Signing in…' : 'Sign In'}
             </button>
