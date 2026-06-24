@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+/* ── BTFF Brand Tokens ──────────────────────────────────────────── */
+:root {
+  /* Core backgrounds */
+  --bg-base:     #0B0F19;
+  --bg-surface:  #0F1624;
+  --bg-card:     rgba(255,255,255,0.03);
+  --bg-card-alt: #1a2235;
+
+  /* Brand colours */
+  --blue:        #0057B8;
+  --blue-light:  #1a6fd4;
+  --blue-glow:   rgba(0, 87, 184, 0.2);
+  --gold:        #FFC527;
+  --gold-dark:   #e6a800;
+  --gold-glow:   rgba(255, 197, 39, 0.2);
+  --turf:        #00C853;   /* live / active / pitch only */
+  --turf-glow:   rgba(0, 200, 83, 0.15);
+  --ember:       #E53935;   /* deadlines / danger */
+
+  /* Text */
+  --text-primary:   #F5F7FA;
+  --text-secondary: #B0B8C8;
+  --text-muted:     #4A5568;
+
+  /* Borders */
+  --border:       #1E2A40;
+  --border-light: #2A3654;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  margin: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-surface); }
+::-webkit-scrollbar-thumb { background: var(--bg-card-alt); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--blue); }
+
+/* ── Cards ──────────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;             /* rounded-2xl per brand guide */
+  backdrop-filter: blur(4px);
+}
+
+.card-hover { transition: border-color 0.2s, box-shadow 0.2s; }
+.card-hover:hover {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue), 0 4px 24px var(--blue-glow);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────
+   btn-primary  = Trophy Gold gradient  (main CTAs)
+   btn-blue     = Bettitude Blue        (secondary actions)
+   btn-ghost    = outlined              (tertiary)
+   ─────────────────────────────────────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: #000;
+  font-weight: 800;
+  border-radius: 0.75rem;          /* rounded-xl */
+  padding: 0.625rem 1.5rem;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  box-shadow: 0 2px 12px var(--gold-glow);
+}
+.btn-primary:hover  { opacity: 0.92; }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-blue {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-blue:hover  { background: var(--blue-light); }
+.btn-blue:active { transform: scale(0.98); }
+.btn-blue:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-ghost:hover { color: var(--text-primary); border-color: var(--blue); }
+
+/* ── Inputs ──────────────────────────────────────────────────────*/
+.input {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  color: var(--text-primary);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-glow);
+}
+.input::placeholder { color: var(--text-muted); }
+
+/* ── Badges ──────────────────────────────────────────────────────*/
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-width: 1px;
+  border-style: solid;
+}
+
+/* LIVE badge — Turf Green */
+.badge-live {
+  background: rgba(0,200,83,0.12);
+  color: #00C853;
+  border-color: rgba(0,200,83,0.3);
+}
+/* CAPTAIN badge — Trophy Gold */
+.badge-captain {
+  background: rgba(255,197,39,0.12);
+  color: #FFC527;
+  border-color: rgba(255,197,39,0.3);
+}
+/* DEADLINE badge — Ember Red */
+.badge-deadline {
+  background: rgba(229,57,53,0.12);
+  color: #E53935;
+  border-color: rgba(229,57,53,0.3);
+}
+/* NEW badge — Bettitude Blue */
+.badge-new {
+  background: rgba(0,87,184,0.12);
+  color: #0057B8;
+  border-color: rgba(0,87,184,0.3);
+}
+
+/* ── Animations ──────────────────────────────────────────────────*/
+@keyframes fadeIn    { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes pulseBlue { 0%,100% { box-shadow: 0 0 0 0 var(--blue-glow); } 50% { box-shadow: 0 0 0 8px transparent; } }
+@keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+.animate-fade-in      { animation: fadeIn 0.3s ease both; }
+.animate-pulse-blue   { animation: pulseBlue 2s infinite; }
+.ticker-scroll        { animation: tickerScroll 40s linear infinite; display: flex; width: max-content; }
+.ticker-scroll:hover  { animation-play-state: paused; }
