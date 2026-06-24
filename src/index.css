@@ -47,6 +47,9 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--bg-card-alt); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--blue); }
 
+.scrollbar-hide { scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
 /* ── Cards ──────────────────────────────────────────────────────── */
 .card {
   background: var(--bg-card);

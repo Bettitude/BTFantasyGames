@@ -6,6 +6,7 @@ import { api } from '../lib/api';
 import CountryBadge from '../components/CountryBadge';
 import { STALE } from '../lib/queryClient';
 import { matchesCountry } from '../data/countries';
+import PlayerAvatar from '../components/PlayerAvatar';
 
 const POS_TAG = {
   GK: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
@@ -126,8 +127,11 @@ export default function Players() {
                 style={{ borderBottom: '1px solid #0F1624' }}>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-black ${POS_BG[p.position]}`}>
-                      {p.position}
+                    <div className="relative shrink-0">
+                      <PlayerAvatar player={p} size="sm" bgClass={POS_BG[p.position]}/>
+                      <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-white text-[7px] font-black ${POS_BG[p.position]}`}>
+                        {p.position[0]}
+                      </span>
                     </div>
                     <div>
                       <div className="font-semibold text-sm" style={{ color: '#F5F7FA' }}>{p.name}</div>

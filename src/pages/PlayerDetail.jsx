@@ -6,6 +6,7 @@ import CountryBadge from '../components/CountryBadge';
 import { POSITION_COLORS } from '../data/formations';
 import { formatPrice } from '../utils/pointsCalculator';
 import { STALE } from '../lib/queryClient';
+import PlayerAvatar from '../components/PlayerAvatar';
 
 export default function PlayerDetail() {
   const { id } = useParams();
@@ -73,10 +74,8 @@ export default function PlayerDetail() {
 
       {/* Header */}
       <div className="card p-6 mb-6 flex flex-col sm:flex-row items-start gap-6">
-        <div className={`w-20 h-20 rounded-2xl ${col.bg} flex items-center justify-center shrink-0`}>
-          <span className="text-white font-black text-xl">
-            {player.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-          </span>
+        <div className={`w-20 h-20 rounded-2xl ${col.bg} flex items-center justify-center shrink-0 overflow-hidden`}>
+          <PlayerAvatar player={player} size="lg" bgClass={col.bg}/>
         </div>
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-3 mb-2">

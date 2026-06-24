@@ -1,10 +1,5 @@
 import { POSITION_COLORS } from '../data/formations';
-
-function initials(name = '') {
-  const parts = name.trim().split(' ').filter(Boolean);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
+import PlayerAvatar from './PlayerAvatar';
 
 function PlayerToken({ slot, captainId, vcId, onSelect, onRemove, pointsMap, readOnly }) {
   const { player, pos, x, y } = slot;
@@ -18,10 +13,10 @@ function PlayerToken({ slot, captainId, vcId, onSelect, onRemove, pointsMap, rea
       style={{ left: `${x}%`, top: `${y}%` }}
       onClick={() => !readOnly && player && onSelect && onSelect(player.id)}>
       <div className="flex flex-col items-center gap-0.5 cursor-pointer">
-        <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center relative
+        <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center relative overflow-hidden
           ${player ? `${col.bg} border-white/30` : 'bg-[#0d1a0f] border-dashed border-[#2A3654]'}`}>
           {player
-            ? <span className="text-white text-[11px] font-black tracking-tight">{initials(player.name)}</span>
+            ? <PlayerAvatar player={player} size="md" bgClass={col.bg}/>
             : <span className={`text-[10px] font-bold ${col.text}`}>{pos}</span>}
           {isCap && <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#FFC527] rounded-full flex items-center justify-center text-black font-black text-[9px]">C</div>}
           {isVc && !isCap && <div className="absolute -top-1 -right-1 w-4 h-4 bg-slate-400 rounded-full flex items-center justify-center text-black font-black text-[9px]">V</div>}
@@ -56,10 +51,10 @@ function BenchRow({ bench, captainId, vcId, onRemove, readOnly }) {
         const isVc  = player && player.id === vcId;
         return (
           <div key={slot.id} className="flex flex-col items-center gap-0.5">
-            <div className={`w-9 h-9 rounded-full border-2 flex items-center justify-center relative opacity-70
+            <div className={`w-9 h-9 rounded-full border-2 flex items-center justify-center relative overflow-hidden opacity-70
               ${player ? `${col.bg} border-white/20` : 'bg-[#0d1a0f] border-dashed border-[#2A3654]'}`}>
               {player
-                ? <span className="text-white text-[10px] font-black">{initials(player.name)}</span>
+                ? <PlayerAvatar player={player} size="sm" bgClass={col.bg}/>
                 : <span className={`text-[9px] font-bold ${col.text}`}>{pos === 'ANY' ? '?' : pos}</span>}
               {isCap && <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-[#FFC527] rounded-full flex items-center justify-center text-black font-black text-[7px]">C</div>}
               {isVc && !isCap && <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-slate-400 rounded-full flex items-center justify-center text-black font-black text-[7px]">V</div>}

@@ -118,13 +118,14 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50" style={{ background: '#0B0F19', borderBottom: '1px solid #1E2A40' }}>
       {/* Countdown ticker */}
       {countdown && (
-        <div className="text-xs font-bold text-center py-1 tracking-widest uppercase"
+        <div className="text-[10px] sm:text-xs font-bold text-center py-1 px-2 tracking-wide sm:tracking-widest uppercase truncate"
           style={{ background: 'linear-gradient(90deg, #0057B8, #1a6fd4)', color: '#fff' }}>
-          World Cup 2026 kicks off in {countdown}
+          <span className="sm:hidden">WC 2026 in {countdown}</span>
+          <span className="hidden sm:inline">World Cup 2026 kicks off in {countdown}</span>
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 flex items-center h-14 gap-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 flex items-center h-14 gap-2 sm:gap-3">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 shrink-0">
           <div className="relative w-8 h-8">
@@ -137,12 +138,12 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop links */}
-        <div className="hidden lg:flex items-center gap-0.5 flex-1">
+        {/* Desktop links — scrolls within its own box instead of overflowing the navbar */}
+        <div className="hidden lg:flex items-center gap-0.5 flex-1 min-w-0 overflow-x-auto scrollbar-hide">
           {NAV_LINKS.map(({ to, label }) => (
             <NavLink key={to} to={to} end={to === '/'}
               className={({ isActive }) =>
-                `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                `px-2 lg:px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                   isActive ? 'bg-[#0057B8]/20 text-[#FFC527] font-semibold' : 'text-[#B0B8C8] hover:text-white hover:bg-white/5'
                 }`}>
               {label}
@@ -151,8 +152,8 @@ export default function Navbar() {
         </div>
 
         {/* Search bar (desktop) */}
-        <form onSubmit={handleSearch} className="hidden md:flex items-center gap-1.5 rounded-xl px-3 py-1.5 flex-shrink-0"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid #2A3654', width: 200 }}>
+        <form onSubmit={handleSearch} className="hidden lg:flex items-center gap-1.5 rounded-xl px-3 py-1.5 shrink-0 w-36 xl:w-48"
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid #2A3654' }}>
           <Search className="w-3.5 h-3.5 text-[#4A5568] shrink-0"/>
           <input
             className="bg-transparent text-xs text-[#B0B8C8] placeholder-[#4A5568] outline-none flex-1 min-w-0"
@@ -163,12 +164,12 @@ export default function Navbar() {
         </form>
 
         {/* Right icons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 ml-auto lg:ml-0">
           {user && (
-            <div className="hidden sm:flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs shrink-0"
+            <div className="hidden sm:flex items-center gap-1.5 rounded-lg px-2 sm:px-3 py-1.5 text-xs shrink-0"
               style={{ background: 'rgba(255,197,39,0.08)', border: '1px solid rgba(255,197,39,0.2)' }}>
               <Wallet className="w-3 h-3 text-[#FFC527]"/>
-              <span className="text-[#FFC527] font-black">{formatBudget(budget)}</span>
+              <span className="hidden md:inline text-[#FFC527] font-black">{formatBudget(budget)}</span>
             </div>
           )}
 
@@ -193,7 +194,7 @@ export default function Navbar() {
 
               {/* Notifications dropdown */}
               {notifOpen && (
-                <div className="absolute right-0 top-full mt-2 w-80 rounded-2xl shadow-2xl z-50 overflow-hidden"
+                <div className="absolute right-0 top-full mt-2 w-80 max-w-[90vw] rounded-2xl shadow-2xl z-50 overflow-hidden"
                   style={{ background: '#0F1624', border: '1px solid #1E2A40' }}>
                   <div className="px-4 py-3 font-black text-sm" style={{ borderBottom: '1px solid #1E2A40', color: '#F5F7FA' }}>
                     Notifications
@@ -269,6 +270,21 @@ export default function Navbar() {
               {label}
             </NavLink>
           ))}
+
+          {user && (
+            <>
+              <div className="my-1" style={{ borderTop: '1px solid #1E2A40' }}/>
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm sm:hidden"
+                style={{ background: 'rgba(255,197,39,0.08)' }}>
+                <Wallet className="w-3.5 h-3.5 text-[#FFC527]"/>
+                <span className="text-[#FFC527] font-black">{formatBudget(budget)}</span>
+              </div>
+              <button onClick={() => { setOpen(false); handleSignOut(); }}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-[#4A5568] hover:text-[#E53935] hover:bg-white/5 text-left">
+                <LogOut className="w-3.5 h-3.5"/> Sign out
+              </button>
+            </>
+          )}
         </div>
       )}
     </nav>
